@@ -20,22 +20,9 @@ methods: {
   autoSetCanvasSize(canvas);
 
   listenToUser(canvas);
-  /**************/
 
   var eraserEnabled = false;
-  // pen.onclick =function () {
-  //    eraserEnabled = false
-  //    pen.classList.add('active')
-  //    eraser.classList.remove('active')
-  // }
 
-  // eraser.onclick =function () {
-  //    eraserEnabled = true
-  //    eraser.classList.add('active')
-  //    pen.classList.remove('active')
-  // }
-  /***************/
-  //svg 不能使用 addClass
   $("#pen").click(function() {
     eraserEnabled = false;
     $(this)
@@ -51,62 +38,11 @@ methods: {
       .siblings()
       .attr("class", "icon");
   });
-  // clear.onclick = function(){
-  //     context.clearRect(0, 0, canvas.width, canvas.height)
-  // }
+
   $("#clear").click(function() {
     context.clearRect(0, 0, canvas.width, canvas.height);
   });
-  // download.onclick = function(){
-  //     var url = canvas.toDataURL()
-  //     var a = document.createElement('a')
-  //     document.body.appendChild(a)
-  //     a.href = url
-  //     a.download = '我的画儿'
-  //     a.click()
-  // }
-  $("#download").click(function(event) {
-    var url = canvas.toDataURL();
-    var a = document.createElement("a");
-    document.body.appendChild(a);
-    a.href = url;
-    a.download = "我的画儿";
-    a.click();
-  });
-  /*************/
 
-  // black.onclick = function(){
-  //     context.fillStyle = 'black'
-  //     context.strokeStyle = 'black'
-  //     this.classList.add('active')
-  //     green.classList.remove('active')
-  //     blue.classList.remove('active')
-  //     red.classList.remove('active')
-  // }
-  // red.onclick = function(){
-  //     context.fillStyle = 'red'
-  //     context.strokeStyle = 'red'
-  //     this.classList.add('active')
-  //     green.classList.remove('active')
-  //     blue.classList.remove('active')
-  //     black.classList.remove('active')
-  // }
-  // green.onclick = function(){
-  //     context.fillStyle = 'green'
-  //     context.strokeStyle = 'green'
-  //     this.classList.add('active')
-  //     red.classList.remove('active')
-  //     blue.classList.remove('active')
-  //     black.classList.remove('active')
-  // }
-  // blue.onclick = function(){
-  //     context.fillStyle = 'blue'
-  //     context.strokeStyle = 'blue'
-  //     this.classList.add('active')
-  //     green.classList.remove('active')
-  //     red.classList.remove('active')
-  //     black.classList.remove('active')
-  // }
   $(".colors").on("click", "li", function() {
     var color = $(this).context.id;
     context.fillStyle = color;
@@ -116,13 +52,6 @@ methods: {
       .siblings()
       .removeClass("active");
   });
-  /*****************/
-  // thin.onclick = function() {
-  //     lineWidth = 5
-  // }
-  // thick.onclick = function() {
-  //     lineWidth = 10
-  // }
   $(".sizes").on("click", "li", function() {
     var index = $(this).index();
     if (index === 0) {
@@ -131,7 +60,6 @@ methods: {
       lineWidth = 10;
     }
   });
-  /*****************/
   function autoSetCanvasSize(canvas) {
     setCanvasSize();
 
@@ -147,14 +75,6 @@ methods: {
       canvas.height = pageHeight;
     }
   }
-
-  /***************/
-  // function drawCircle(x, y, radius) {
-  //     context.beginPath()
-  //     context.arc(x, y, redius, Math.PI * 2)
-  //     context.fill()
-  // }
-
   function drawLine(x1, y1, x2, y2) {
     context.beginPath();
     context.moveTo(x1, y1);

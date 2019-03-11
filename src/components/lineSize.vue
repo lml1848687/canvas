@@ -8,7 +8,7 @@
         v-for="(item, index) in size"
         :key="index"
       >
-        <span :class="choose" v-show="index===lineIndex"></span>
+        <span class="choose" v-show="index===lineIndex"></span>
       </li>
     </ol>
   </div>

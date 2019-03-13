@@ -75,20 +75,16 @@ export default {
     };
   },
   methods: {
-    test() {
-      console.log(123465);
-    },
     chooseTool(item, index) {
       this.toolIndex = index;
       this.currentTool = item;
+      var canvas = document.getElementById("canvas");
       if (item === "clear") {
-        var canvas = document.getElementById("canvas");
         var context = canvas.getContext("2d");
         context.beginPath();
         context.clearRect(0, 0, canvas.width, canvas.height);
       }
       if (item === "save") {
-        var canvas = document.getElementById("canvas");
         var url = canvas.toDataURL("image/png");
         var a = document.createElement("a");
         document.body.appendChild(a);

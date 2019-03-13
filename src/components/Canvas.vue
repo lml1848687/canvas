@@ -1,6 +1,14 @@
 <template>
   <div>
-    <canvas id="canvas" @mousemove="draw" @mouseup="mouseUp" @mousedown="mouseDown"></canvas>
+    <canvas
+      id="canvas"
+      @mousemove="mouseDraw"
+      @touchmove="touchDraw"
+      @mouseup="mouseUp"
+      @touchend="mouseUp"
+      @mousedown="mouseDown"
+      @touchstart="touchStart"
+    ></canvas>
     <div id="actions" class="actions">
       <svg
         :id="item"
@@ -26,7 +34,7 @@
     <div class="lineSize">
       <ol class="sizes">
         <li
-          id="thin"
+          :id="item"
           :class="item"
           v-for="(item, index) in lineSize"
           :key="index"
@@ -47,27 +55,47 @@ export default {
     return {
       toolNames: ["pen", "eraser", "clear", "save"],
       toolIndex: 0,
-      currentTool: null,
+      currentTool: "pen",
       colors: ["black", "red", "green", "blue"],
       colorIndex: 0,
-      currentColor: null,
+      currentColor: "black",
       lineSize: ["thin", "thick"],
       lineSizeIndex: 0,
-      currentLineSize: null,
+      lineWidth: 5,
       lastPoint: null,
       newPoint: null,
-      startDraw: false
+      canDraw: false,
+      eraserUsing: false
     };
   },
   mounted() {
     this.setCanvasSize();
+    window.onresize = () => {
+      this.setCanvasSize();
+    };
   },
   methods: {
+    test() {
+      console.log(123465);
+    },
     chooseTool(item, index) {
-      if (index < 2) {
-        this.toolIndex = index;
-      }
+      this.toolIndex = index;
       this.currentTool = item;
+      if (item === "clear") {
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext("2d");
+        context.beginPath();
+        context.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      if (item === "save") {
+        var canvas = document.getElementById("canvas");
+        var url = canvas.toDataURL("image/png");
+        var a = document.createElement("a");
+        document.body.appendChild(a);
+        a.href = url;
+        a.download = "我的图片";
+        a.click();
+      }
     },
     chooseColor(item, index) {
       this.colorIndex = index;
@@ -75,22 +103,41 @@ export default {
     },
     chooseLineSize(item, index) {
       this.lineSizeIndex = index;
-      this.currentLineSize = item;
+      this.lineWidth = (index + 1) * 5;
     },
     mouseDown(e) {
-      this.startDraw = true;
+      this.canDraw = true;
+      this.eraserUsing = true;
+      let x = e.clientX;
+      let y = e.clientY;
+      this.lastPoint = {
+        x: x,
+        y: y
+      };
+    },
+    touchStart(e) {
+      this.canDraw = true;
+      this.eraserUsing = true;
+      let x = e.touches[0].clientX;
+      let y = e.touches[0].clientY;
+      this.lastPoint = {
+        x: x,
+        y: y
+      };
     },
     mouseUp() {
-      this.startDraw = false;
+      this.canDraw = false;
+      this.eraserUsing = false;
+      //console.log("mouseUp");
     },
-    draw(e) {
+    mouseDraw(e) {
       let x = e.clientX;
       let y = e.clientY;
       this.newPoint = {
         x: x,
         y: y
       };
-      if (this.startDraw) {
+      if (this.currentTool === "pen" && this.canDraw) {
         this.drawLine(
           this.lastPoint.x,
           this.lastPoint.y,
@@ -98,9 +145,31 @@ export default {
           this.newPoint.y
         );
       }
+      if (this.currentTool === "eraser" && this.eraserUsing) {
+        this.eraser(this.newPoint.x, this.newPoint.y);
+      }
       this.lastPoint = this.newPoint;
     },
-
+    touchDraw(e) {
+      let x = e.touches[0].clientX;
+      let y = e.touches[0].clientY;
+      this.newPoint = {
+        x: x,
+        y: y
+      };
+      if (this.currentTool === "pen" && this.canDraw) {
+        this.drawLine(
+          this.lastPoint.x,
+          this.lastPoint.y,
+          this.newPoint.x,
+          this.newPoint.y
+        );
+      }
+      if (this.currentTool === "eraser" && this.eraserUsing) {
+        this.eraser(this.newPoint.x, this.newPoint.y);
+      }
+      this.lastPoint = this.newPoint;
+    },
     setCanvasSize() {
       let canvas = document.getElementById("canvas");
       let pageWidth = document.documentElement.clientWidth;
@@ -111,19 +180,19 @@ export default {
     drawLine(x1, y1, x2, y2) {
       var canvas = document.getElementById("canvas");
       var context = canvas.getContext("2d");
-      let lineWidth = 5;
       context.beginPath();
+      context.strokeStyle = this.currentColor;
       context.moveTo(x1, y1);
-      context.lineWidth = lineWidth;
+      context.lineWidth = this.lineWidth;
       context.lineTo(x2, y2);
       context.stroke();
       context.closePath();
     },
-    drawCir(x, y) {
+    eraser(x, y) {
       var canvas = document.getElementById("canvas");
       var context = canvas.getContext("2d");
       context.beginPath();
-      context.arc(x, y, 0.1, 0, Math.PI * 2);
+      context.clearRect(x - 5, y - 5, 10, 10);
       context.fill();
     }
   }
@@ -215,7 +284,7 @@ ol {
 
 .sizes {
   position: fixed;
-  left: 28px;
+  left: 25px;
   top: 250px;
   li {
     margin: 20px 0;

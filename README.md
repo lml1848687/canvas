@@ -1,29 +1,5 @@
-# canvas
+## canvas
+- 基于vue-cli@3.4.0脚手架，使用canvas API完成的一个画板。
+- 包括作画，橡皮擦，清屏，下载等功能。
+- 支持线条颜色，粗细的选择。
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
